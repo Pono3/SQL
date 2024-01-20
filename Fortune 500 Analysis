@@ -55,3 +55,17 @@ VALUES
     ('Company II', 'Telecommunications', 110.5, 2000, 1, 21, 12, 4.9),
     ('Company JJ', 'Manufacturing', 370.0, 3100, 1, 20, 12, 7.6),
     ('Company KK', 'Healthcare', 150.2, 3400, 0, 16, 8, 5.3);
+
+# Analysis: 
+
+#How many companies (in descending order) allow for at least 14, 12 and 8 weeks of maternity leave (with descriptors)?
+
+SELECT company_name,
+CASE WHEN maternity_leave_weeks >=14 THEN "14+ or Outstanding"
+WHEN maternity_leave_weeks >=12 THEN "12+ or Exceeds Expectations"
+WHEN maternity_leave_weeks >=8 THEN "8+ or Good"
+ELSE "Under 8 or Satisfactory" 
+END AS "total maternity leave weeks"
+FROM fortune_companies
+GROUP BY maternity_leave_weeks
+ORDER by maternity_leave_weeks desc;
