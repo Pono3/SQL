@@ -59,7 +59,6 @@ VALUES
 # Analysis: 
 
 #How many companies (in descending order) allow for at least 14, 12 and 8 weeks of maternity leave (with descriptors)?
-
 SELECT company_name,
 CASE WHEN maternity_leave_weeks >=14 THEN "14+ or Outstanding"
 WHEN maternity_leave_weeks >=12 THEN "12+ or Exceeds Expectations"
@@ -69,3 +68,37 @@ END AS "total maternity leave weeks"
 FROM fortune_companies
 GROUP BY maternity_leave_weeks
 ORDER by maternity_leave_weeks desc;
+
+#Identify all the companies that grant an average of at least 20 Paid Time Off days per year in descending order. 
+SELECT company_name, ROUND (AVG(paid_time_off_days),1) AS PTO_Days
+FROM fortune_companies
+GROUP BY industry
+HAVING PTO_Days>=20
+ORDER BY PTO_Days desc;
+
+#Which companies with at least 10000 employees (in descending order)offer health benefits AND at least 20 days of PTO
+SELECT company_name, employees, paid_time_off_days, healthcare_benefits
+FROM fortune_companies
+WHERE employees >= "10000"
+AND paid_time_off_days >= 20
+AND healthcare_benefits>= 1
+ORDER BY employees desc;
+
+#Which companies with at least 10000 employees (in descending order) offer at least 20 days of PTO or 14 weeks of Maternity leave
+SELECT company_name, employees, paid_time_off_days AS PTO_Days, maternity_leave_weeks
+FROM fortune_companies
+WHERE employees >= "10000"
+AND PTO_Days>= 20
+OR maternity_leave_weeks >= 14
+ORDER BY employees desc;
+
+#What is the average revenue categorized by industry and in descending order?
+SELECT industry, ROUND(AVG(revenue),1) AS average_revenue
+FROM fortune_companies
+GROUP BY industry
+ORDER BY AVG(revenue) desc;
+
+
+
+
+
