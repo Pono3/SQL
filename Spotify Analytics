@@ -41,7 +41,7 @@ LIMIT 5;
 
 SELECT artist_name
 , AVG(popularity)
-FROM SpotifyData
+FROM BIT_DB.SpotifyData
 GROUP BY artist_name
 ORDER BY AVG(popularity) desc;
 
