@@ -37,6 +37,14 @@ FROM BIT_DB.Spotifydata
 ORDER BY popularity desc
 LIMIT 5;
 
+#What is the average popularity rating by Artist in descending order?
+
+SELECT artist_name
+, AVG(popularity)
+FROM SpotifyData
+GROUP BY artist_name
+ORDER BY AVG(popularity) desc;
+
 #What are the top ten fastest songs measured by tempo?
 
 SELECT tempo, track_name, artist_name AS Artist
