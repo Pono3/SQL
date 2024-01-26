@@ -1,0 +1,116 @@
+--Final 3.13 Project--
+
+-- 1. Show Customers (their full names, customer ID, and country) who reside in North America (USA or Canada).--
+
+SELECT FirstName AS 'First Name', LastName AS 'Last Name', CustomerId AS 'Customer ID', Country
+FROM chinook.customers
+WHERE Country = 'USA' OR Country ='Canada';
+
+-- 2. Show Customers (their full names, customer ID, and country) who reside in France ordered by last name.--
+
+SELECT FirstName AS 'First Name', LastName AS 'Last Name', CustomerId AS 'Customer ID', Country
+FROM chinook.customers
+WHERE Country = 'France'
+ORDER BY LastName ASC;
+
+-- 3. Find the Invoices of customers who are from France. The resulting table should show the customer's full name, Billing Country, Invoice ID, Date of the invoice List by Invoice Date Descending.--
+
+SELECT customers.FirstName AS 'First Name', customers.LastName AS 'Last Name' 
+, invoices.billingcountry AS 'Country'
+, invoices.invoiceid AS 'Invoice ID'
+, invoices.invoicedate AS 'Invoice Date'
+FROM chinook.invoices
+JOIN chinook.customers
+ON invoices.CustomerID=customers.CustomerID
+WHERE invoices.billingcountry = 'France'
+ORDER BY invoicedate DESC;
+
+-- 4. Show the full list of Employees who are not Sales Support Agents.--
+
+SELECT FirstName AS 'First Name', LastName AS 'Last Name', Title
+FROM chinook.employees
+WHERE Title <> 'Sales Support Agent';
+
+-- 5. Find a unique/distinct list of billing cities from the Invoice table.--
+
+SELECT DISTINCT BillingCity AS 'Billing City'
+FROM Chinook.invoices
+ORDER BY BillingCity ASC;
+
+-- 6. Provide a query that shows the hightest invoice total associated with each sales agent. 
+
+SELECT emp.LastName AS 'First Name', emp.Firstname AS 'Last Name', Inv.InvoiceId AS 'Invoice ID', MAX(Inv.Total) AS 'Invoice Total'
+FROM chinook.Employees emp
+JOIN chinook.Customers cust ON cust.SupportRepId = emp.EmployeeId
+JOIN chinook.Invoices Inv ON Inv.CustomerId = cust.customerID
+GROUP BY emp.LastName;
+
+-- 7. Show the Customer name, Country, Invoice ID, Invoice Total and Sales Agent name for all invoices and customers from the Czech Republic, ordered by Invoice ID.
+
+SELECT cust.FirstName AS 'Customer First Name'
+, cust.LastName AS 'Customer Last Name'
+, cust.Country
+, inv.InvoiceId AS 'Invoice ID'
+, inv.total AS 'Total'
+, emp.Firstname AS 'Sales Agent First Name'
+, emp.LastName AS 'Sales Agent Last Name'
+FROM chinook.employees emp 
+JOIN chinook.Customers cust ON cust.SupportRepId = emp.EmployeeId
+JOIN chinook.Invoices Inv ON Inv.CustomerId = cust.CustomerId
+WHERE cust.Country = 'Czech Republic'
+ORDER BY inv.InvoiceID ASC;
+
+-- 8. How many Invoices were there in the last quarter of 2013?
+SELECT COUNT(*) AS 'Total Invoices Q4 2013'
+FROM chinook.Invoices
+WHERE InvoiceDate BETWEEN '2012-10-01' AND '2012-12-31';
+
+-- 9. What are the total sales for 2010 in Canada?-
+SELECT invoices.BillingCountry AS 'Billing Country', ROUND(SUM(TOTAL), 2) AS '2010 Total Sales'
+FROM chinook.invoices
+WHERE InvoiceDate BETWEEN '2010-01-01' AND '2010-12-31'
+AND invoices.BillingCountry = 'Canada';
+
+-- 10. Write a query that retrieves the track name, album title, artist name, and invoice line ID for each purchase. Limit the results to tracks by artists Aerosmith and Green Day. Order the results by both track name and artist.--
+SELECT tracks.name AS 'Track Name', artists.Name AS 'Artist', albums.title AS 'Album Title', invoice_items.invoicelineid AS 'Invoice ID'
+FROM chinook.invoice_items
+LEFT JOIN chinook.tracks ON tracks.trackID = invoice_items.trackID
+INNER JOIN chinook.albums ON tracks.AlbumID = albums.AlbumID
+LEFT JOIN chinook.artists ON  albums.ArtistID = artists.ArtistID
+WHERE artists.name IN ('Aerosmith', 'Green Day')
+ORDER BY
+    CASE WHEN artists.name = 'Aerosmith' THEN 1
+         WHEN artists.name = 'Green Day' THEN 2
+         ELSE 3 END,
+         tracks.name;
+
+-- 11. Write a query that retrieves all Album Titles, including the Track name, Media type, and Genre. The results should be ordered by album name and track name."
+
+SELECT a.Title AS 'Album Title', t.Name AS 'Track Name', g.Name AS 'Genre', m.Name AS 'Media Type'
+FROM chinook.albums a
+JOIN chinook.tracks t ON t.AlbumId = a.AlbumId 
+JOIN chinook.genres g ON g.GenreId = t.GenreId 
+JOIN chinook.media_types m ON m.MediaTypeId = t.MediaTypeId 
+ORDER BY a.title, t. name;
+
+-- 12. Display the total sales made by each sales agent in Canada and the United States.--
+SELECT employees.FirstName AS 'First Name', employees.LastName AS 'Last Name', invoices.BillingCountry AS 'Country', ROUND(SUM(invoices.total), 2) AS 'Total Sales'
+FROM chinook.employees
+JOIN chinook.Customers ON customers.SupportRepId = employees.Employeeid
+JOIN chinook.Invoices ON invoices.CustomerId = customers.CustomerId
+WHERE employees.Title = 'Sales Support Agent'
+AND invoices.BillingCountry IN ('USA', 'Canada')
+GROUP BY employees.FirstName, employees.LastName, invoices.BillingCountry
+ORDER by invoices.BillingCountry;
+
+-- 13. Rank the sales agents by total sales in 2013--
+SELECT employees.FirstName AS 'First Name', employees.LastName AS 'Last Name', ROUND(SUM(invoices.total), 2) AS 'Total Sales'
+, ROW_NUMBER() OVER (ORDER BY SUM(invoices.total) DESC) AS 'Sales Rank'
+FROM chinook.employees
+JOIN chinook.Customers ON customers.SupportRepId = employees.Employeeid
+JOIN chinook.Invoices ON invoices.CustomerId = customers.CustomerId
+WHERE employees.Title = 'Sales Support Agent'
+AND invoices.invoicedate LIKE '2013%'
+GROUP BY employees.FirstName
+ORDER BY (ROUND(SUM(invoices.total), 2)) DESC
+;
