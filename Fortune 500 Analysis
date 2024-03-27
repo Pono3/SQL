@@ -58,13 +58,13 @@ VALUES
 
 # Analysis: 
 
-#How many companies (in descending order) allow for at least 14, 12 and 8 weeks of maternity leave (with descriptors)?
-SELECT company_name,
+#Which companies (in descending order) allow for at least 14, 12 and 8 weeks of maternity leave (with descriptors)?
+SELECT company_name, maternity_leave_weeks,
 CASE WHEN maternity_leave_weeks >=14 THEN "14+ or Outstanding"
 WHEN maternity_leave_weeks >=12 THEN "12+ or Exceeds Expectations"
 WHEN maternity_leave_weeks >=8 THEN "8+ or Good"
 ELSE "Under 8 or Satisfactory" 
-END AS "total maternity leave weeks"
+END AS "total maternity leave weeks/rating"
 FROM fortune_companies
 GROUP BY maternity_leave_weeks
 ORDER by maternity_leave_weeks desc;
