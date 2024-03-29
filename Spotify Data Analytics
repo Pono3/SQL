@@ -54,20 +54,20 @@ LIMIT 10;
 
 #Which artist has the fastest song measured by tempo?
 
-SELECT tempo, track_name, artist_name AS Artist
+SELECT ROUND(tempo,2) AS Tempo, track_name AS 'Track Name', artist_name AS Artist
 FROM BIT_DB.Spotifydata
 ORDER BY tempo desc
 LIMIT 1;
 
 #List the songs in duration (minutes) from shortest to longest
 
-SELECT (duration_ms/1000)*0.0166667 AS 'Duration in Minutes', track_name
+SELECT ROUND((duration_ms/1000)*(0.0166667),2) AS 'Duration in Minutes', track_name AS 'Track Name'
 FROM BIT_DB.Spotifydata
 ORDER BY duration_ms asc;
 
 #Which artist released the shortest song?
 
-SELECT (duration_ms/1000)*0.0166667 AS 'Duration in Minutes', track_name
+SELECT ROUND((duration_ms/1000)*(0.0166667),2) AS 'Duration in Minutes', artist_name AS 'Artist Name', track_name AS 'Track Name'
 FROM BIT_DB.Spotifydata
 ORDER BY duration_ms asc
 LIMIT 1;
@@ -78,11 +78,12 @@ SELECT DISTINCT artist_name, count(track_id)
 FROM BIT_DB.spotifydata
 WHERE artist_name LIKE '%Olivia%';
 
-#What is the avg length in minutes for The Weeknd's songs?
+#What is the average length in minutes for The Weeknd's songs?
 
-SELECT DISTINCT artist_name, AVG(duration_ms/1000)*0.0166667
+SELECT DISTINCT artist_name AS 'Artist Name', ROUND((AVG(duration_ms/1000))*0.0166667,2) AS 'Average Duration in Minutes'
 FROM BIT_DB.Spotifydata
-WHERE artist_name LIKE '%weeknd%';
+WHERE artist_name LIKE '%weeknd%'
+
 
 
 
